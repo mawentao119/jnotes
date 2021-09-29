@@ -1,0 +1,18 @@
+---
+- hosts: masters, workers, services
+  gather_facts: no
+  serial: 5
+  tasks:
+    - name: "解压压缩包{{ package_name }}.tar.gz"
+      become: yes
+      unarchive:
+        src: /home/hadoop/{{ package_name }}.tar.gz
+        dest: /home/hadoop
+        group: hadoop
+        owner: hadoop
+        remote_src: yes
+        
+    - name: "重命名{{ package_name }}目录为hadoop"
+      become: yes
+      command: mv /home/hadoop/{{ package_name }} /home/hadoop/hadoop
+
