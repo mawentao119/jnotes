@@ -1,0 +1,54 @@
+---
+- hosts: masters, workers, services
+  gather_facts: no
+  serial: 5
+  tasks:
+    - name: "创建用户组：hadoop"
+      become: yes
+      group:
+        name: hadoop
+        state: present
+        
+    - name: "创建用户：hadoop"
+      become: yes
+      user: 
+        name: hadoop
+        group: hadoop
+        createhome: yes
+        home: /home/hadoop
+        password: "$6$myhadoop$3VbyssW77alxjrXNc19wrPBUipPT6ZYluU.GRzYjbRR/xE4jwUPn788wpEp7n3Rp0gHLuRNrIu6R/JY4S1kC00"
+        system: no
+        state: present
+
+    - name: "传输文件: hadoop.tar.gz ..."
+      become: yes
+      copy:
+        src: "{{ hadoop_package }}"
+        dest: /home/hadoop/
+        owner: hadoop
+        group: hadoop
+        force: yes
+
+- hosts: masters
+  gather_facts: no
+  serial: 2
+  tasks:
+    - name: "NameNode创建文件夹：hadoop_tmp/hdfs/namenode"
+      become: yes
+      file:
+        path: /home/hadoop/hadoop_tmp/hdfs/namenode
+        state: directory
+        owner: hadoop
+        group: hadoop
+
+- hosts: workers
+  gather_facts: no
+  serial: 3
+  tasks:
+    - name: "DataNode创建文件夹：hadoop_tmp/hdfs/datanode"
+      become: yes
+      file:
+        path: /home/hadoop/hadoop_tmp/hdfs/datanode
+        state: directory
+        owner: hadoop
+        group: hadoop

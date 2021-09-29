@@ -1,0 +1,18 @@
+[pi_adm]
+adm ansible_ssh_host=192.168.3.111
+
+[masters]
+master ansible_ssh_host=192.168.3.201
+
+[workers]
+workera ansible_ssh_host=192.168.3.203
+workerb ansible_ssh_host=192.168.3.204
+workerc ansible_ssh_host=192.168.3.205
+
+[services]
+service ansible_ssh_host=192.168.3.202
+
+[all:vars]
+remote_user=pi
+ansible_ssh_user=pi
+hadoop_package=/Users/pi/Jupyter/packages/hadoop-3.2.2.tar.gz

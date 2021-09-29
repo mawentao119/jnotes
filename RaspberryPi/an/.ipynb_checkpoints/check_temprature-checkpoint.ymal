@@ -1,0 +1,11 @@
+---
+- hosts: all
+  gather_facts: no
+  tasks:
+    - name: "Check temprature ..."
+      shell: "vcgencmd measure_temp"
+      register: temprature
+
+    - name: "Results. "
+      debug:
+        msg: "{{ ansible_host }} : {{ temprature.stdout }}"
