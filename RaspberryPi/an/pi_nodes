@@ -16,5 +16,6 @@ service ansible_ssh_host=192.168.3.202
 remote_user=pi
 ansible_ssh_user=pi
 
-package_name=hadoop-3.2.2
-hadoop_package=/Users/pi/Jupyter/packages/hadoop-3.2.2.tar.gz
+hadoop_version=hadoop-3.2.2
+hadoop_package_dir=/Users/pi/Jupyter/packages/hadoop
+hadoop_package=/Users/pi/Jupyter/packages/hadoop/hadoop-3.2.2.tar.gz

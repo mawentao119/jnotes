@@ -1,0 +1,8 @@
+---
+- hosts: all
+  gather_facts: no
+  serial: 5
+  tasks:
+    - name: "poweroff"
+      become: yes
+      shell: poweroff

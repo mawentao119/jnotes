@@ -1,0 +1,107 @@
+---
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: "删除临时目录temp"
+      file:
+        path: temp
+        state: absent
+        
+    - name: "生成临时目录temp"
+      file:
+        path: temp
+        state: directory
+        
+    - name: "传输文件到临时目录"
+      copy:
+        src: ~/.ssh/id_rsa.pub
+        dest: temp/{{ ansible_host }}.pub
+        remote_src: yes
+        
+- hosts: all
+  gather_facts: no
+  serial: 5
+  tasks:
+    - name: "生成 openkey"
+      become: yes
+      openssh_keypair:
+        path: /home/hadoop/.ssh/id_rsa
+        owner: hadoop
+        group: hadoop
+        
+    - name: "由于.ssh目录无法fetch"
+      become: yes
+      shell: cat /home/hadoop/.ssh/id_rsa.pub > /home/hadoop/pubkey.pub
+      
+
+    - name: "取得public key"
+      become: yes
+      fetch: 
+        src: /home/hadoop/pubkey.pub
+        dest: temp
+        
+- hosts: pi_adm
+  gather_facts: no
+  tasks:
+    - name: "由于.ssh目录无法fetch"
+      become: yes
+      shell: cat /home/pi/.ssh/id_rsa.pub > /home/pi/pubkey.pub
+      
+    - name: "取得 pi adm 的密钥"
+      become: yes
+      fetch: 
+        src: /home/pi/pubkey.pub
+        dest: temp
+        
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: "汇总密钥"
+      shell: "find temp -name *.pub|xargs cat > temp/authorized_keys"
+      
+- hosts: all
+  gather_facts: no
+  serial: 5
+  tasks:
+    - name: "删除authorized_keys"
+      become: yes
+      file:
+        path: /home/hadoop/.ssh/authorized_keys
+        state: absent
+        
+    - name: "传输authorized_keys"
+      become: yes
+      copy:
+        src: temp/authorized_keys
+        dest: /home/hadoop/.ssh/
+        remote_src: no
+        force: yes
+        owner: hadoop
+        group: hadoop
+
+
+- hosts: localhost
+  gather_facts: no
+  tasks:
+    - name: "清理 temp"
+      file:
+        path: temp
+        state: absent
+
+- hosts: all
+  gather_facts: no
+  tasks:
+    - name: "Delete Files"
+      become: yes
+      file:
+        path: /home/hadoop/pubkey.pub
+        state: absent
+        
+- hosts: pi_adm
+  gather_facts: no
+  tasks:
+    - name: "Delete Files"
+      become: yes
+      file:
+        path: /home/pi/pubkey.pub
+        state: absent

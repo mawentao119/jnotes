@@ -8,7 +8,7 @@
       lineinfile:
         path: /home/hadoop/.bashrc
         regexp: '^export JAVA_HOME='
-        line: 'export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:bin/java::")'
+        line: 'export JAVA_HOME=$(readlink -f /usr/bin/java | sed "s:/bin/java::")'
         state: present
 
     - name: "环境变量：HADOOP_HOME"
@@ -16,7 +16,7 @@
       lineinfile:
         path: /home/hadoop/.bashrc
         regexp: '^export HADOOP_HOME='
-        line: 'export HADOOP_HOME=/home/hadoop'
+        line: 'export HADOOP_HOME=/home/hadoop/hadoop'
         state: present
         
     - name: "环境变量：HADOOP_INSTALL"

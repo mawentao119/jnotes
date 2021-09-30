@@ -1,5 +1,5 @@
 ---
-- hosts: masters, workers, services
+- hosts: masters, workers, services, pi_adm
   gather_facts: no
   serial: 5
   tasks:

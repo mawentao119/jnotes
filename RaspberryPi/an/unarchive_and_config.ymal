@@ -1,18 +1,34 @@
 ---
-- hosts: masters, workers, services
+- hosts: masters, workers, services, pi_adm
   gather_facts: no
   serial: 5
   tasks:
-    - name: "解压压缩包{{ package_name }}.tar.gz"
+    - name: "解压压缩包{{ hadoop_version }}.tar.gz"
       become: yes
       unarchive:
-        src: /home/hadoop/{{ package_name }}.tar.gz
+        src: /home/hadoop/{{ hadoop_version }}.tar.gz
         dest: /home/hadoop
         group: hadoop
         owner: hadoop
         remote_src: yes
-        
-    - name: "重命名{{ package_name }}目录为hadoop"
+
+    - name: "确保目录/home/hadoop/hadoop不存在"
       become: yes
-      command: mv /home/hadoop/{{ package_name }} /home/hadoop/hadoop
+      file: 
+        path: /home/hadoop/hadoop
+        state: absent
+
+    - name: "重命名{{ hadoop_version }}目录为hadoop"
+      become: yes
+      command: mv /home/hadoop/{{ hadoop_version }} /home/hadoop/hadoop
+      
+    - name: "传输配置文件"
+      become: yes
+      copy:
+        src: "{{ hadoop_package_dir }}/etc/hadoop/"
+        dest: /home/hadoop/hadoop/etc/hadoop/
+        owner: hadoop
+        group: hadoop
+        remote_src: no
+        force: yes
 

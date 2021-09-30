@@ -1,0 +1,7 @@
+---
+- hosts: master
+  gather_facts: no
+  serial: 5
+  tasks:
+    - name: "Stop all "
+      shell: " . /home/hadoop/.bashrc; /home/hadoop/hadoop/sbin/stop-all.sh"
