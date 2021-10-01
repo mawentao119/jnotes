@@ -1,0 +1,15 @@
+---
+- hosts: masters, workers, services, pi_adm
+  gather_facts: no
+  serial: 5
+  tasks:    
+    - name: "传输配置文件"
+      become: yes
+      copy:
+        src: "{{ hadoop_package_dir }}/etc/hadoop/"
+        dest: /home/hadoop/hadoop/etc/hadoop/
+        owner: hadoop
+        group: hadoop
+        remote_src: no
+        force: yes
+

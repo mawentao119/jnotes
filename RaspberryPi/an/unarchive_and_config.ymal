@@ -21,14 +21,4 @@
     - name: "重命名{{ hadoop_version }}目录为hadoop"
       become: yes
       command: mv /home/hadoop/{{ hadoop_version }} /home/hadoop/hadoop
-      
-    - name: "传输配置文件"
-      become: yes
-      copy:
-        src: "{{ hadoop_package_dir }}/etc/hadoop/"
-        dest: /home/hadoop/hadoop/etc/hadoop/
-        owner: hadoop
-        group: hadoop
-        remote_src: no
-        force: yes
 
